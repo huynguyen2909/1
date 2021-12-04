@@ -1,0 +1,107 @@
+//xác định tọa độ của ô
+int MineSweeperCore::getCell(int x, int y)
+{
+    return board[x][y];
+}
+//=======================================================================================================================================
+//Tạo mìn (ngẫu nhiên)
+void MineSweeperCore::generateMines()
+{
+    int i;
+    srand( time(NULL) );
+    for (i = 0; i < MINES; ++i)
+    {
+        board[rand() % SIZE][rand() % SIZE] = mine;
+    }
+}
+//=======================================================================================================================================
+//tính số mìn xung quanh ô 
+void MineSweeperCore::generateHints()
+{
+    int i, j;
+    int m, n;
+    for (i = 0; i < SIZE; ++i)
+    {
+        for (j = 0; j < SIZE; ++j)
+        {
+            if (board[i][j] == mine)
+            {
+                for (m = i - 1; m <= j + 1; ++m)
+                {
+                    for (n = j - 1; n <= j + 1; ++n)
+                    {
+                        if (m < 0 || m >= SIZE || n < 0 || n >= SIZE)
+                            continue;
+                        if (board[m][n] == mine)
+                            continue;
+                        board[m][n]++;
+                    }
+                }
+            }
+        }
+    }
+}
+//=======================================================================================================================================
+//Vẽ bảng (trong đó có mìn)
+void MineSweeperCore::showBoard()
+{
+    int i, j;
+    cout << endl;
+    for (i = 0; i < SIZE; ++i)
+    {
+        for (j = 0; j < SIZE; ++j)
+        {
+            switch(board[i][j])
+            {
+                case mine:
+                    cout << "*";
+                    break;
+                case nothing:
+                    cout << "-";
+                    break;
+                default:
+                    cout << board[i][j];
+                    break;
+            }
+            cout << " ";
+        }
+        cout << '\n';
+    }
+    cout << endl;
+}
+//=======================================================================================================================================
+// hiển thị bảng (khi đang chơi)
+void MineSweeperGame::showBoard()
+{
+    int i, j;
+
+    std::cout << std::endl;
+    for (i = 0; i < SIZE; ++i)
+    {
+        for (j = 0; j < SIZE; ++j)
+        {
+            if (layer[i][j] == opened)
+            {
+                switch (getCell(i,j))
+                {
+                    case mine:
+                        std::cout << '*';
+                        break;
+                    case nothing:
+                        std::cout << ' ';
+                        break;
+                    default:
+                        std::cout << getCell(i, j);
+                        break;
+                }
+            }
+            else if (layer[i][j] == danger)
+                std::cout << 'X';
+            else
+                std::cout << '-';
+        }
+        std::cout << '\n';
+    }
+    std::cout << std::endl;
+}
+//=======================================================================================================================================
